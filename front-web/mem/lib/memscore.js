@@ -14,8 +14,8 @@ const resolveScoresFromSourceText = (sourceText) => {
 
 const getAllStudents = require('./getAllStudents')
 
-const getScores = async () => {
-	const scroes = await getMemscore()
+module.exports = async () => {
+  const scroes = await getMemscore()
 
   const allStudents = getAllStudents()
 
@@ -29,23 +29,16 @@ const getScores = async () => {
     const username = title
     // console.log('username: ', username)
 
-
     const existedStudent = allStudents.filter(item => item.email.toLowerCase() === username.toLowerCase())
     if (existedStudent.length > 0) {
       // get scores
       const scores = resolveScoresFromSourceText(text)
       // console.log('scores: ', scores)      
-      existedStudent[0].scores = scores
+      existedStudent[0].score1 = scores[0]
+      existedStudent[0].score2 = scores[1]
       existedStudent[0].updateAt = timestamp
     }   
   })
 
   return allStudents
 }
-
-const run = async () => {
-  console.log((await getScores())[269])
-}
-
-run()
-

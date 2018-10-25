@@ -1,4 +1,4 @@
-import { fakeChartData } from '@/services/api';
+import { fakeChartData, getMemscoreList } from '@/services/api';
 
 export default {
   namespace: 'chart',
@@ -14,30 +14,25 @@ export default {
     salesTypeDataOnline: [],
     salesTypeDataOffline: [],
     radarData: [],
+    scoreList: [],
     loading: false,
   },
 
   effects: {
-    *fetch(_, { call, put }) {
-      const response = yield call(fakeChartData);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
-    },
-    *fetchSalesData(_, { call, put }) {
-      const response = yield call(fakeChartData);
+    *memscore(_, { call, put}) {
+      const response = yield call(getMemscoreList);
       yield put({
         type: 'save',
         payload: {
-          salesData: response.salesData,
+          scoreList: response
         },
-      });
-    },
+      })
+    }
   },
 
   reducers: {
     save(state, { payload }) {
+      console.log('payload: ', payload)
       return {
         ...state,
         ...payload,

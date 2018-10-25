@@ -333,4 +333,9 @@ export default {
   'GET /api/fake_list': getFakeList,
   'POST /api/fake_list': postFakeList,
   'GET /api/captcha': getFakeCaptcha,
+
+  'GET /api/getMemscoreList': [
+    { class: 'mem_1_2', name: 'sample', email: 'hello@world.com', score1: '12', score2: '25' },
+    { class: 'mem_2_2', name: 'anothoer', email: 'andd@good.com', score1: '9', score2: '15' }
+  ],
 };

@@ -3,7 +3,7 @@ const fs = require('fs')
 const _ = require('lodash')
 
 module.exports = () => {
-  const csvFile = fs.readFileSync(__dirname + '/data/mem_students.csv', 'utf8')
+  const csvFile = fs.readFileSync(__dirname + '/../data/mem_students.csv', 'utf8')
   const parseResult = Papa.parse(csvFile).data
   const result = []
   Object.keys(parseResult).forEach(key => {
