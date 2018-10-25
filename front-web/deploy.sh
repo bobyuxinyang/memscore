@@ -1,5 +1,5 @@
 #!/bin/bash
-npm run build
+# npm run build
 
 daoUsername='bobyuxinyang'
 daoPassword='3NzWxp[hKATfv'
