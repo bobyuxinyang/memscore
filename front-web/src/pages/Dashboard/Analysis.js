@@ -1,14 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import {
-  Row,
-  Col,
-  Icon,
-  Card,
-  Table,
-  Menu,
-  Dropdown,
-} from 'antd';
+import { Row, Col, Icon, Card, Table, Menu, Dropdown, Input, Button, Progress } from 'antd';
 import GridContent from '@/components/PageHeaderWrapper/GridContent';
 
 import styles from './Analysis.less';
@@ -27,6 +19,7 @@ for (let i = 0; i < 7; i += 1) {
 class Analysis extends Component {
   state = {
     loading: false,
+    searchText: '',
   };
 
   componentDidMount() {
@@ -34,7 +27,7 @@ class Analysis extends Component {
     this.reqRef = requestAnimationFrame(() => {
       dispatch({
         type: 'chart/memscore',
-      });      
+      });
     });
   }
 
@@ -47,12 +40,16 @@ class Analysis extends Component {
     clearTimeout(this.timeoutId);
   }
 
+  handleSearch = value => {
+    this.setState({
+      searchText: value,
+    });
+  };
+
   render() {
-    const { loading: propsLoding } = this.state;
+    const { loading: propsLoding, filteredValue } = this.state;
     const { chart, loading: stateLoading } = this.props;
-    const {
-      scoreList
-    } = chart
+    const { scoreList } = chart;
     const loading = propsLoding || stateLoading;
     const menu = (
       <Menu>
@@ -87,24 +84,47 @@ class Analysis extends Component {
         className: styles.alignRight,
       },
       {
-        title: '对课程内容的掌握情况评分',
+        title: '对课程内容的掌握情况',
         dataIndex: 'score1',
         key: 'score1',
         className: styles.alignRight,
+        sorter: (x, y) => {
+          return x.score1 - y.score1;
+        },
       },
       {
-        title: '对班级生态的贡献评分',
+        title: '对班级生态的贡献',
         dataIndex: 'score2',
         key: 'score2',
         className: styles.alignRight,
-      },    
+        sorter: (x, y) => {
+          return x.score2 - y.score2;
+        },
+      },
       {
         title: '最后更新',
         dataIndex: 'updateAt',
         key: 'updateAt',
         className: styles.alignRight,
-      },            
+      },
     ];
+
+    const { searchText } = this.state;
+
+    const list = scoreList
+      ? scoreList.filter(item => item.name.includes(searchText) || item.email.includes(searchText))
+      : null;
+
+    let scoreCount = 0;
+    let progress = 0;
+    if (scoreList) {
+      scoreList.forEach(item => {
+        if (item.score1 && item.score2) {
+          scoreCount += 1;
+        }
+      });
+      progress = (scoreCount / scoreList.length) * 100;
+    }
 
     return (
       <GridContent>
@@ -113,15 +133,26 @@ class Analysis extends Component {
             <Card
               loading={loading}
               bordered={false}
-              title='2018MEM导引课程分数自评'
+              title="2018MEM导引课程分数自评(数据来源 main.toyhouse.cc:801)"
               extra={iconGroup}
               style={{ marginTop: 24 }}
             >
+              <span>打分完成度</span>
+              <Progress percent={progress} />
+              <br />
+              <br />
+              <Input.Search
+                placeholder="输入姓名或者邮箱搜索"
+                onSearch={this.handleSearch}
+                enterButton
+              />{' '}
+              <br />
+              <br />
               <Table
                 rowKey={record => record.index}
                 size="small"
                 columns={columns}
-                dataSource={scoreList}
+                dataSource={list}
                 pagination={{
                   style: { marginBottom: 0 },
                   pageSize: 20,
@@ -130,7 +161,6 @@ class Analysis extends Component {
             </Card>
           </Col>
         </Row>
-
       </GridContent>
     );
   }
