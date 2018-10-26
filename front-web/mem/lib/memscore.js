@@ -48,15 +48,25 @@ module.exports = async () => {
     if (existedStudent.length > 0) {
       // get scores
       const scores = resolveScoresFromSourceText(text)
-
-      const signUserList = resolveSignsFromSourceText(text)
-
       // console.log('scores: ', scores)      
       existedStudent[0].score1 = scores[0]
-      existedStudent[0].score2 = scores[1]
+      existedStudent[0].score2 = scores[1]      
+
+      const signUserList = resolveSignsFromSourceText(text)
+      if (signUserList.length > 0) {
+        existedStudent[0].signUserList = signUserList
+      }
+      
       existedStudent[0].updateAt = timestamp
-      existedStudent[0].signUserList = signUserList
     }   
+  })
+
+  allStudents.forEach(item => {
+    let status = 'failed'
+    if (item.score1 && item.score2) {
+      status = 'ok'
+    }
+    item.status = status
   })
 
   return allStudents

@@ -335,7 +335,21 @@ export default {
   'GET /api/captcha': getFakeCaptcha,
 
   'GET /api/getMemscoreList': [
-    { class: 'mem_1_2', name: 'sample', email: 'hello@world.com', score1: '12', score2: '25' },
-    { class: 'mem_2_2', name: 'anothoer', email: 'andd@good.com', score1: '9', score2: '15' }
+    { class: 'mem_1_2', name: 'sample', email: 'hello@world.com', score1: '12', score2: '25', status: 'failed', },
+    {
+      class: "mem_ta",
+      no: "0",
+      name: "杨裕欣",
+      gender: "男",
+      email: "bob.yuxinyang@gmail.com",
+      score1: "16",
+      score2: "20",
+      signUserList: [
+        "Liuyuan@yesiin.com",
+        "Bob.yuxinyang@gmail.com"
+      ],
+      status: 'ok',
+      updateAt: "2018-10-25T11:44:57Z"
+    }
   ],
 };

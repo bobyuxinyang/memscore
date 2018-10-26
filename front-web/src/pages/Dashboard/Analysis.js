@@ -107,6 +107,22 @@ class Analysis extends Component {
         key: 'updateAt',
         className: styles.alignRight,
       },
+      {
+        title: '状态',
+        dataIndex: 'status',
+        key: 'status',
+        render: (value, row ,index) => {
+          if (value === 'ok') {
+            return (
+              <Icon type="check-circle" theme="filled" style={{ color: 'green' }}/>
+            )            
+          } else {
+            return (
+              <Icon type="close-circle" theme="filled" style={{ color: 'red' }}/>
+            )     
+          }
+        }
+      }
     ];
 
     const { searchText } = this.state;
@@ -124,6 +140,20 @@ class Analysis extends Component {
         }
       });
       progress = parseInt((scoreCount / scoreList.length) * 100)
+    }
+
+    const expandedRowContent = (record) => {
+      // 签名的人
+      const signUsers = record.signUserList ? record.signUserList.map(item => {
+        return (
+          <p key={item}>签名: {item}</p>
+        )
+      }) : (
+        <p>还没人签名</p>
+      )
+      return (
+        <div style={{ margin: 0 }}>{signUsers}</div>
+      )
     }
 
     return (
@@ -145,14 +175,15 @@ class Analysis extends Component {
                 placeholder="输入姓名或者邮箱搜索"
                 onSearch={this.handleSearch}
                 enterButton
-              />{' '}
+              />
               <br />
               <br />
               <Table
-                rowKey={record => record.index}
+                rowKey={record => record.name}
                 size="small"
                 columns={columns}
                 dataSource={list}
+                expandedRowRender={expandedRowContent}
                 pagination={{
                   style: { marginBottom: 0 },
                   pageSize: 20,
