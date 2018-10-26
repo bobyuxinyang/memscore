@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'dva';
 import { Row, Col, Icon, Card, Table, Menu, Dropdown, Input, Button, Progress } from 'antd';
 import GridContent from '@/components/PageHeaderWrapper/GridContent';
+import moment from 'moment'
 
 import styles from './Analysis.less';
 
@@ -106,6 +107,11 @@ class Analysis extends Component {
         dataIndex: 'updateAt',
         key: 'updateAt',
         className: styles.alignRight,
+        render: (value) => {
+          return value ? (
+            <span>{moment(value).format('YYYY-MM-DD HH:mm')}</span>
+          ) : ''
+        }
       },
       {
         title: '状态',
@@ -146,13 +152,29 @@ class Analysis extends Component {
       // 签名的人
       const signUsers = record.signUserList ? record.signUserList.map(item => {
         return (
-          <p key={item}>签名: {item}</p>
+          <li key={item.email}>
+            签名: {item.email}
+            {item.isTa ? '(助教)' : `(${item.name}，${item.class})` }，
+            {item.timestamp}
+          </li>
         )
       }) : (
         <p>还没人签名</p>
       )
+      const messages = record.messages ? record.messages.map((item, index) => {
+        return (
+          <li key={index}
+            style={{'fontWeight': 'bold', textAlign: 'right'}}
+          >
+            {item}
+          </li>
+        )
+      }) : ''
       return (
-        <div style={{ margin: 0 }}>{signUsers}</div>
+        <Row>
+          <Col span={12}>{signUsers}</Col>
+          <Col span={12}>{messages}</Col>
+        </Row>      
       )
     }
 

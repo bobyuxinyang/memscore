@@ -1,4 +1,7 @@
 const getMemscore = require('./getMemscore')
+const getAllStudents = require('./getAllStudents')
+
+const allStudents = getAllStudents()
 
 // 正则从打分template中匹配出分数
 const resolveScoresFromSourceText = (sourceText) => {
@@ -12,6 +15,29 @@ const resolveScoresFromSourceText = (sourceText) => {
     return null
 }
 
+const resolveUserDetail = (signText) => {
+  const timestamp = signText.substr(signText.length - 28, signText.length)  
+  const userMatch = /User:(.*?)\|/.exec(signText)
+  if (!userMatch) {
+    return null
+  }
+  const email = userMatch[1]
+  const result = {
+    email: email.toLowerCase(),
+    isTa: true,
+    class: 'mem_ta',
+    name: '',
+    timestamp,
+  }
+  const classStudents = allStudents.filter(item => item.email.toLowerCase() === email.toLowerCase())
+  if (classStudents.length > 0) {
+    result.class = classStudents[0].class
+    result.isTa = false
+    result.name = classStudents[0].name
+  }
+  return result
+}
+
 // 正则匹配出签名的email
 const resolveSignsFromSourceText = (sourceText) => {
   const signUserList = []
@@ -19,21 +45,17 @@ const resolveSignsFromSourceText = (sourceText) => {
   const match = sourceText.match(reg)
   if (match) {
     match.forEach(signText => {
-      const userMatch = /User:(.*?)\|/.exec(signText)
-      if (userMatch) {
-        signUserList.push(userMatch[1])
+      const signUser = resolveUserDetail(signText)
+      if (signUser) {
+        signUserList.push(signUser)
       }
     })
   }
   return signUserList
 }
 
-const getAllStudents = require('./getAllStudents')
-
 module.exports = async () => {
   const scroes = await getMemscore()
-
-  const allStudents = getAllStudents()
 
   // console.log('all students: ', allStudents)
 
@@ -63,12 +85,49 @@ module.exports = async () => {
   })
 
   allStudents.forEach(item => {
-    let status = 'failed'
-    if (item.score1 && item.score2) {
-      status = 'ok'
+    let flag = true
+    let messages = []
+
+    if (item.signUserList) {
+      // 自己签名数量 
+      const selfCount = item.signUserList.filter(user => user.email.toLowerCase() === item.email.toLowerCase()).length
+
+      // 助教签名数量
+      const taCount = item.signUserList.filter(user => user.isTa).length
+
+      // 本班成员签名数量
+      const classCount = item.signUserList.filter(user => 
+        user.class === item.class 
+        && !user.isTa 
+        && user.email.toLowerCase() !== item.email.toLowerCase()
+      ).length
+
+      // 非本班成员签名数量 
+      const nonClassCount = item.signUserList.filter(user => 
+        user.class !== item.class 
+        && !user.isTa
+      ).length
+
+      messages.push(`需要获得自己的签名(${selfCount}/1)`)
+      messages.push(`需要获得至少1名助教的签名(${taCount}/1)`)
+      messages.push(`至少需要获得5名本班成员的签名(${classCount}/5)`)
+      messages.push(`至少需要获得1名非本班成员签名(${nonClassCount}/1)`)
+
+      flag = flag 
+        && selfCount >=1 
+        && taCount >= 1
+        && classCount >= 5
+        && nonClassCount >= 1
     }
-    item.status = status
+
+    // 两个分数都要有值
+    if (!item.score1 || !item.score2) {
+      flag = false
+      messages.push('自评分数不完整')
+    }
+    item.status = flag ? 'ok' : 'failed'
+    item.messages = messages
   })
 
-  return allStudents
+  return allStudents.filter(item => item.class !== 'mem_ta')
 }

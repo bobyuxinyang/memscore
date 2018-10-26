@@ -32,7 +32,6 @@ export default {
 
   reducers: {
     save(state, { payload }) {
-      console.log('payload: ', payload)
       return {
         ...state,
         ...payload,

@@ -335,21 +335,32 @@ export default {
   'GET /api/captcha': getFakeCaptcha,
 
   'GET /api/getMemscoreList': [
-    { class: 'mem_1_2', name: 'sample', email: 'hello@world.com', score1: '12', score2: '25', status: 'failed', },
-    {
-      class: "mem_ta",
-      no: "0",
-      name: "杨裕欣",
-      gender: "男",
-      email: "bob.yuxinyang@gmail.com",
-      score1: "16",
-      score2: "20",
-      signUserList: [
-        "Liuyuan@yesiin.com",
-        "Bob.yuxinyang@gmail.com"
-      ],
+    { class: '第一批次2班', name: 'sample', email: 'hello@world.com', score1: '12', score2: '25', status: 'failed', },
+    { class: '第二批次4班',
+      no: '0',
+      name: '杨裕欣',
+      gender: '男',
+      email: 'bob.yuxinyang@gmail.com',
+      score1: '16',
+      score2: '20',
+      signUserList:
+       [ { email: 'liuyuan@yesiin.com',
+           isTa: true,
+           class: 'mem_ta',
+           name: '',
+           timestamp: '15:12, 25 October 2018 (CST)' },
+         { email: 'bob.yuxinyang@gmail.com',
+           isTa: false,
+           class: '第二批次4班',
+           name: '杨裕欣',
+           timestamp: '12:25, 26 October 2018 (CST)' } ],
+      updateAt: '2018-10-26T04:25:56Z',
       status: 'ok',
-      updateAt: "2018-10-25T11:44:57Z"
+      messages:
+       [ '需要获得自己的签名(1/1)',
+         '需要获得至少1名助教的签名(1/1)',
+         '至少需要获得5名本班成员的签名(0/5)',
+         '至少需要获得1名非本班成员签名(0/1)' ] 
     }
   ],
 };
