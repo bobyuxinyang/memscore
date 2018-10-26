@@ -123,7 +123,7 @@ class Analysis extends Component {
           scoreCount += 1;
         }
       });
-      progress = (scoreCount / scoreList.length) * 100;
+      progress = parseInt((scoreCount / scoreList.length) * 100)
     }
 
     return (
