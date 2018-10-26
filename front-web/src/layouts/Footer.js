@@ -8,27 +8,21 @@ const FooterView = () => (
     <GlobalFooter
       links={[
         {
-          key: 'Pro 首页',
-          title: 'Pro 首页',
-          href: 'https://pro.ant.design',
+          key: 'Wiki 首页',
+          title: 'Wiki 首页',
+          href: 'http://main.toyhouse.cc:801/',
           blankTarget: true,
         },
         {
-          key: 'github',
-          title: <Icon type="github" />,
-          href: 'https://github.com/ant-design/ant-design-pro',
-          blankTarget: true,
-        },
-        {
-          key: 'Ant Design',
-          title: 'Ant Design',
-          href: 'https://ant.design',
+          key: '2018清华MEM课程',
+          title: '2018清华MEM课程',
+          href: 'http://main.toyhouse.cc:81/',
           blankTarget: true,
         },
       ]}
       copyright={
         <Fragment>
-          Copyright <Icon type="copyright" /> 2018 蚂蚁金服体验技术部出品
+          Copyright <Icon type="copyright" /> 2018 清华MEM入学导引课程
         </Fragment>
       }
     />

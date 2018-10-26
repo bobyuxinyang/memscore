@@ -109,6 +109,7 @@ module.exports =  () => {
   }).then(res => res.text())
   .then(data => {
   	const parsedData = JSON.parse(data).responses[0].hits.hits
+  	// console.log(parsedData)
   	return parsedData.map(item => {
   		return {
 	  		_id: item._id,

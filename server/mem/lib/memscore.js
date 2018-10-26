@@ -12,6 +12,21 @@ const resolveScoresFromSourceText = (sourceText) => {
     return null
 }
 
+const resolveSignsFromSourceText = (sourceText) => {
+  const signUserList = []
+  const reg = /\[\[User:.*?\|.*?\]\] \(\[\[User talk:.*?\|talk\]\]\) .*\(...\)/g
+  const match = sourceText.match(reg)
+  if (match) {
+    match.forEach(signText => {
+      const userMatch = /User:(.*?)\|/.exec(signText)
+      if (userMatch) {
+        signUserList.push(userMatch[1])
+      }
+    })
+  }
+  return signUserList
+}
+
 const getAllStudents = require('./getAllStudents')
 
 module.exports = async () => {
@@ -35,9 +50,23 @@ module.exports = async () => {
       const scores = resolveScoresFromSourceText(text)
       // console.log('scores: ', scores)      
       existedStudent[0].score1 = scores[0]
-      existedStudent[0].score2 = scores[1]
+      existedStudent[0].score2 = scores[1]      
+
+      const signUserList = resolveSignsFromSourceText(text)
+      if (signUserList.length > 0) {
+        existedStudent[0].signUserList = signUserList
+      }
+      
       existedStudent[0].updateAt = timestamp
     }   
+  })
+
+  allStudents.forEach(item => {
+    let status = 'failed'
+    if (item.score1 && item.score2) {
+      status = 'ok'
+    }
+    item.status = status
   })
 
   return allStudents

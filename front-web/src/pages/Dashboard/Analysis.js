@@ -167,7 +167,12 @@ class Analysis extends Component {
               extra={iconGroup}
               style={{ marginTop: 24 }}
             >
-              <span>打分完成度</span>
+              <p>
+                <a target="_blank" href="http://main.toyhouse.cc:801/index.php/2018MEM%E5%AF%BC%E5%BC%95%E8%AF%BE%E7%A8%8B%E6%9C%80%E5%90%8E%E7%9A%84%E4%BD%9C%E4%B8%9A">
+                  打分规则: http://main.toyhouse.cc:801/index.php/2018MEM导引课程最后的作业
+                </a>
+              </p>
+              <span>完成度</span>
               <Progress percent={progress} />
               <br />
               <br />

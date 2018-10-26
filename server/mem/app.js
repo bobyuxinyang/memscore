@@ -1,6 +1,6 @@
 const memscore = require('./lib/memscore')
 
 memscore().then(res => {
-  console.log(res)
+  console.log(res[268])
 })
 

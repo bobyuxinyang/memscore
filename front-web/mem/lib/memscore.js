@@ -1,17 +1,18 @@
 const getMemscore = require('./getMemscore')
 
+// 正则从打分template中匹配出分数
 const resolveScoresFromSourceText = (sourceText) => {
     // match and get scores
-    const scoreReg = /{{memscore\|\d+\|\d+}}/
-    const matchRes = scoreReg.exec(sourceText)
+    const scoreReg = /{{memscore\|(\d+)\|(\d+)}}/
+    const matchRes = sourceText.match(scoreReg)
     // console.log(matchRes)
     if (matchRes) {
-      const matchStr = matchRes[0]
-      return scores = matchStr.substring(2, matchStr.length - 2).split('|').splice(1)
+      return scores = [matchRes[1], matchRes[2]]
     }
     return null
 }
 
+// 正则匹配出签名的email
 const resolveSignsFromSourceText = (sourceText) => {
   const signUserList = []
   const reg = /\[\[User:.*?\|.*?\]\] \(\[\[User talk:.*?\|talk\]\]\) .*\(...\)/g
