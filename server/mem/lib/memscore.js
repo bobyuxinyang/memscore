@@ -106,21 +106,30 @@ module.exports = async () => {
       // 本班成员签名数量
       const classCount = item.signUserList.filter(user =>
         user.class === item.class
-        && !user.isTa
         && user.email.toLowerCase() !== item.email.toLowerCase()
       ).length
 
       // 非本班成员签名数量
       const nonClassCount = item.signUserList.filter(user =>
         user.class !== item.class
-        && !user.isTa
       ).length
 
-      messages.push(`需要获得自己的签名(${selfCount}/1)`)
-      messages.push(`需要获得至少1名助教的签名(${taCount}/1)`)
-      messages.push(`至少需要获得5名本班成员的签名(${classCount}/5)`)
-      messages.push(`至少需要获得1名非本班成员签名(${nonClassCount}/1)`)
-
+      messages.push({
+        status: selfCount >= 1 ? 'ok' : 'failed',
+        msg: `需要获得自己的签名(${selfCount}/1)`
+      })
+      messages.push({
+        status: taCount >= 1 ? 'ok' : 'failed',
+        msg: `需要获得至少1名助教的签名(${taCount}/1)`
+      })
+      messages.push({
+        status: classCount >= 5 ? 'ok' : 'failed',
+        msg: `至少需要获得5名本班成员的签名(${classCount}/5)`
+      })
+      messages.push({
+        status: nonClassCount >= 1 ? 'ok' : 'failed',
+        msg: `至少需要获得1名非本班成员签名(${nonClassCount}/1)`
+      })
       flag = flag
         && selfCount >=1
         && taCount >= 1
@@ -133,7 +142,7 @@ module.exports = async () => {
     // 两个分数都要有值
     if (!item.score1 || !item.score2) {
       flag = false
-      messages.push('自评分数不完整')
+      messages.push({status: 'failed', msg: '自评分数不完整'})
     }
     item.status = flag ? 'ok' : 'failed'
     item.messages = messages

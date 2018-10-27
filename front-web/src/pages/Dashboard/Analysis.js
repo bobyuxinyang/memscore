@@ -203,9 +203,13 @@ class Analysis extends Component {
       const messages = record.messages ? record.messages.map((item, index) => {
         return (
           <li key={index}
-            style={{'fontWeight': 'bold', textAlign: 'right'}}
+            style={{
+              'fontWeight': 'bold',
+              textAlign: 'right',
+              color: item.status === 'ok' ? 'green' : 'red'
+            }}
           >
-            {item}
+            {item.msg}
           </li>
         )
       }) : ''
