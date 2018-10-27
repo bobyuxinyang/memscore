@@ -3,6 +3,7 @@ import { connect } from 'dva';
 import { Row, Col, Icon, Card, Table, Menu, Dropdown, Input, Button, Progress } from 'antd';
 import GridContent from '@/components/PageHeaderWrapper/GridContent';
 import moment from 'moment'
+import Pie from '@/components/Charts/Pie';
 
 import styles from './Analysis.less';
 
@@ -121,11 +122,11 @@ class Analysis extends Component {
           if (value === 'ok') {
             return (
               <Icon type="check-circle" theme="filled" style={{ color: 'green' }}/>
-            )            
+            )
           } else {
             return (
               <Icon type="close-circle" theme="filled" style={{ color: 'red' }}/>
-            )     
+            )
           }
         }
       }
@@ -137,15 +138,52 @@ class Analysis extends Component {
       ? scoreList.filter(item => item.name.includes(searchText) || item.email.includes(searchText))
       : null;
 
+    // 总完成度
     let scoreCount = 0;
     let progress = 0;
     if (scoreList) {
       scoreList.forEach(item => {
-        if (item.score1 && item.score2) {
+        if (item.status === 'ok') {
           scoreCount += 1;
         }
       });
       progress = parseInt((scoreCount / scoreList.length) * 100)
+    }
+
+    let pieChartList = []
+    if (scoreList) {
+      const classList = [
+        '第一批次1班', '第一批次2班', '第一批次3班', '第一批次4班',
+        '第二批次1班', '第二批次2班', '第二批次3班', '第二批次4班',
+      ]
+      // 班级完成度
+      const classScoresList = []
+      classList.forEach(className => {
+        const classMembers = scoreList.filter(item => item['class'] === className)
+        const scoreMembers = classMembers.filter(item => item.status === 'ok')
+        classScoresList.push({
+          className,
+          total: classMembers.length,
+          score: scoreMembers.length
+        })
+      })
+      pieChartList = classScoresList.map(item => {
+        let percent = 0.0
+        if (item.total > 0) {
+          percent = parseInt(item.score / item.total * 100)
+        }
+        return (
+          <Col span={6}>
+            <Pie
+              key={item.className}
+              percent={percent}
+              subTitle={item.className}
+              total={`${item.score}/${item.total}`}
+              height={200}
+            />
+          </Col>
+        )
+      })
     }
 
     const expandedRowContent = (record) => {
@@ -154,7 +192,8 @@ class Analysis extends Component {
         return (
           <li key={item.email}>
             签名: {item.email}
-            {item.isTa ? '(助教)' : `(${item.name}，${item.class})` }，
+            {item.isTa ? '(助教)' : '' }
+            {item.class !== 'mem_ta' ? `(${item.name}，${item.class})` : ''}，
             {item.timestamp}
           </li>
         )
@@ -172,9 +211,9 @@ class Analysis extends Component {
       }) : ''
       return (
         <Row>
-          <Col span={12}>{signUsers}</Col>
-          <Col span={12}>{messages}</Col>
-        </Row>      
+          <Col span={16}>{signUsers}</Col>
+          <Col span={8}>{messages}</Col>
+        </Row>
       )
     }
 
@@ -194,7 +233,10 @@ class Analysis extends Component {
                   打分规则: http://main.toyhouse.cc:801/index.php/2018MEM导引课程最后的作业
                 </a>
               </p>
-              <span>完成度</span>
+              <div>
+                {pieChartList}
+              </div>
+              <span>总完成度({scoreCount}/{scoreList.length})</span>
               <Progress percent={progress} />
               <br />
               <br />

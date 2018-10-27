@@ -2,7 +2,7 @@ const fetch = require("node-fetch");
 const fs = require('fs')
 
 module.exports =  () => {
-	const indexJson = {"index":["mem_201801_toyhouse_general_first"],"ignore_unavailable":true,"preference":1540435265076}
+	const indexJson = {"index":["mem_201801_toyhouse"],"ignore_unavailable":true,"preference":1540435265076}
   const queryJson = {
 		"version": true,
 		"query": {

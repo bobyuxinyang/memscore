@@ -350,7 +350,7 @@ export default {
            name: '',
            timestamp: '15:12, 25 October 2018 (CST)' },
          { email: 'bob.yuxinyang@gmail.com',
-           isTa: false,
+           isTa: true,
            class: '第二批次4班',
            name: '杨裕欣',
            timestamp: '12:25, 26 October 2018 (CST)' } ],
@@ -360,7 +360,7 @@ export default {
        [ '需要获得自己的签名(1/1)',
          '需要获得至少1名助教的签名(1/1)',
          '至少需要获得5名本班成员的签名(0/5)',
-         '至少需要获得1名非本班成员签名(0/1)' ] 
+         '至少需要获得1名非本班成员签名(0/1)' ]
     }
   ],
 };

@@ -16,7 +16,7 @@ const resolveScoresFromSourceText = (sourceText) => {
 }
 
 const resolveUserDetail = (signText) => {
-  const timestamp = signText.substr(signText.length - 28, signText.length)  
+  const timestamp = signText.substr(signText.length - 28, signText.length)
   const userMatch = /User:(.*?)\|/.exec(signText)
   if (!userMatch) {
     return null
@@ -29,11 +29,16 @@ const resolveUserDetail = (signText) => {
     name: '',
     timestamp,
   }
-  const classStudents = allStudents.filter(item => item.email.toLowerCase() === email.toLowerCase())
+  const classStudents = allStudents.filter(
+    item => item.email.toLowerCase() === email.toLowerCase()
+  )
   if (classStudents.length > 0) {
     result.class = classStudents[0].class
     result.isTa = false
     result.name = classStudents[0].name
+  }
+  if (result.name === '宋丹丹') {
+    result.isTa = true
   }
   return result
 }
@@ -67,21 +72,24 @@ module.exports = async () => {
     const username = title
     // console.log('username: ', username)
 
-    const existedStudent = allStudents.filter(item => item.email.toLowerCase() === username.toLowerCase())
+    const existedStudent = allStudents.filter(item =>
+      item.email.toLowerCase() === username.toLowerCase()
+      || item.name === username.toLowerCase()
+    )
     if (existedStudent.length > 0) {
       // get scores
       const scores = resolveScoresFromSourceText(text)
-      // console.log('scores: ', scores)      
+      // console.log('scores: ', scores)
       existedStudent[0].score1 = scores[0]
-      existedStudent[0].score2 = scores[1]      
+      existedStudent[0].score2 = scores[1]
 
       const signUserList = resolveSignsFromSourceText(text)
       if (signUserList.length > 0) {
         existedStudent[0].signUserList = signUserList
       }
-      
+
       existedStudent[0].updateAt = timestamp
-    }   
+    }
   })
 
   allStudents.forEach(item => {
@@ -89,22 +97,22 @@ module.exports = async () => {
     let messages = []
 
     if (item.signUserList) {
-      // 自己签名数量 
+      // 自己签名数量
       const selfCount = item.signUserList.filter(user => user.email.toLowerCase() === item.email.toLowerCase()).length
 
       // 助教签名数量
       const taCount = item.signUserList.filter(user => user.isTa).length
 
       // 本班成员签名数量
-      const classCount = item.signUserList.filter(user => 
-        user.class === item.class 
-        && !user.isTa 
+      const classCount = item.signUserList.filter(user =>
+        user.class === item.class
+        && !user.isTa
         && user.email.toLowerCase() !== item.email.toLowerCase()
       ).length
 
-      // 非本班成员签名数量 
-      const nonClassCount = item.signUserList.filter(user => 
-        user.class !== item.class 
+      // 非本班成员签名数量
+      const nonClassCount = item.signUserList.filter(user =>
+        user.class !== item.class
         && !user.isTa
       ).length
 
@@ -113,11 +121,13 @@ module.exports = async () => {
       messages.push(`至少需要获得5名本班成员的签名(${classCount}/5)`)
       messages.push(`至少需要获得1名非本班成员签名(${nonClassCount}/1)`)
 
-      flag = flag 
-        && selfCount >=1 
+      flag = flag
+        && selfCount >=1
         && taCount >= 1
         && classCount >= 5
         && nonClassCount >= 1
+    } else {
+      flag = false
     }
 
     // 两个分数都要有值
