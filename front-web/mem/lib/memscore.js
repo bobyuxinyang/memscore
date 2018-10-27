@@ -107,11 +107,13 @@ module.exports = async () => {
       const classCount = item.signUserList.filter(user =>
         user.class === item.class
         && user.email.toLowerCase() !== item.email.toLowerCase()
+        && user.class !== 'mem_ta'
       ).length
 
       // 非本班成员签名数量
       const nonClassCount = item.signUserList.filter(user =>
         user.class !== item.class
+        && user.class !== 'mem_ta'
       ).length
 
       messages.push({
