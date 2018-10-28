@@ -87,9 +87,11 @@ module.exports = async () => {
     if (existedStudent.length > 0) {
       // get scores
       const scores = resolveScoresFromSourceText(text)
-      // console.log('scores: ', scores)
-      existedStudent[0].score1 = scores[0]
-      existedStudent[0].score2 = scores[1]
+      if (scores) {
+        // console.log('scores: ', scores)
+        existedStudent[0].score1 = scores[0]
+        existedStudent[0].score2 = scores[1]
+      }
 
       const signUserList = resolveSignsFromSourceText(text)
       if (signUserList.length > 0) {

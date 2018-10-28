@@ -41,7 +41,7 @@ const resolveUserDetail = (signText) => {
     result.isTa = false
     result.name = classStudents[0].name
   }
-  if (result.name === '宋丹丹') {
+  if (result.name === '宋丹丹' || result.name === '陈晋砾') {
     result.isTa = true
   }
   return result
@@ -87,9 +87,11 @@ module.exports = async () => {
     if (existedStudent.length > 0) {
       // get scores
       const scores = resolveScoresFromSourceText(text)
-      // console.log('scores: ', scores)
-      existedStudent[0].score1 = scores[0]
-      existedStudent[0].score2 = scores[1]
+      if (scores) {
+        // console.log('scores: ', scores)
+        existedStudent[0].score1 = scores[0]
+        existedStudent[0].score2 = scores[1]
+      }
 
       const signUserList = resolveSignsFromSourceText(text)
       if (signUserList.length > 0) {
@@ -118,7 +120,7 @@ module.exports = async () => {
       const classCount = item.signUserList.filter(user =>
         user.class === item.class
         && (user.email.toLowerCase() !== item.email.toLowerCase()
-          || user.email.replace(' ', '_').toLowerCase() !== item.email.toLowerCase() )   
+          || user.email.replace(' ', '_').toLowerCase() !== item.email.toLowerCase() )
         && user.class !== 'mem_ta'
       ).length
 
