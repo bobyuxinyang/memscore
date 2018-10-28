@@ -21,13 +21,17 @@ const resolveUserDetail = (signText) => {
   if (!userMatch) {
     return null
   }
-  const email = userMatch[1]
+  let email = userMatch[1]
   const result = {
     email: email.toLowerCase(),
     isTa: true,
     class: 'mem_ta',
     name: '',
     timestamp,
+  }
+  if (email.indexOf(' ') > 0) {
+    // console.log('found space in email: ', email)
+    email = email.replace(' ', '_')
   }
   const classStudents = allStudents.filter(
     item => item.email.toLowerCase() === email.toLowerCase()
@@ -69,7 +73,11 @@ module.exports = async () => {
     // console.log(text)
 
     // get username
-    const username = title
+    let username = title
+    if (username.indexOf(' ') > 0) {
+      // console.log('found space in username: ', username)
+      username = username.replace(' ', '_')
+    }
     // console.log('username: ', username)
 
     const existedStudent = allStudents.filter(item =>
@@ -98,7 +106,10 @@ module.exports = async () => {
 
     if (item.signUserList) {
       // 自己签名数量
-      const selfCount = item.signUserList.filter(user => user.email.toLowerCase() === item.email.toLowerCase()).length
+      const selfCount = item.signUserList.filter(user =>
+        user.email.toLowerCase() === item.email.toLowerCase()
+        || user.email.replace(' ', '_').toLowerCase() === item.email.toLowerCase()
+      ).length
 
       // 助教签名数量
       const taCount = item.signUserList.filter(user => user.isTa).length
@@ -106,7 +117,8 @@ module.exports = async () => {
       // 本班成员签名数量
       const classCount = item.signUserList.filter(user =>
         user.class === item.class
-        && user.email.toLowerCase() !== item.email.toLowerCase()
+        && (user.email.toLowerCase() !== item.email.toLowerCase()
+          || user.email.replace(' ', '_').toLowerCase() !== item.email.toLowerCase() )   
         && user.class !== 'mem_ta'
       ).length
 
