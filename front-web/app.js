@@ -36,9 +36,10 @@ router.get('/api/scores.csv', async (ctx, next) => {
   Object.keys(parseResult).forEach(key => {
     const item = parseResult[key]
     const no = item[0]
+    const name = item[1]
     const score = item[2]
     resultData.forEach(dataItem => {
-    	if (dataItem[2] === no) {
+    	if (dataItem[1] === name) {
     		dataItem[4] = score
     	}
     })
@@ -50,7 +51,7 @@ router.get('/api/scores.csv', async (ctx, next) => {
 	}  
 
 	var csv = Papa.unparse(data);	
-	ctx.type = 'application/octet-stream'
+	// ctx.type = 'application/octet-stream'
 	ctx.body = csv
 })
 
