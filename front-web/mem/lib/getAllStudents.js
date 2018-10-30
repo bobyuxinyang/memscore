@@ -9,7 +9,7 @@ module.exports = () => {
   Object.keys(parseResult).forEach(key => {
     const item = parseResult[key]
     result.push({
-      class: item[0],
+      class: item[0].trim(),
       no: item[2],
       name: item[3],
       gender: item[4],
