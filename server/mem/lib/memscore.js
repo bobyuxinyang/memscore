@@ -79,7 +79,6 @@ module.exports = async () => {
       username = username.replace(' ', '_')
     }
     // console.log('username: ', username)
-
     const existedStudent = allStudents.filter(item =>
       item.email.toLowerCase() === username.toLowerCase()
       || item.name === username.toLowerCase()
@@ -99,6 +98,10 @@ module.exports = async () => {
       }
 
       existedStudent[0].updateAt = timestamp
+      // if (username.toLowerCase() === 'zhangwei5118@126.com') {
+        // console.log('found: Zhangwei5118@126.com')
+        // console.log(text)
+      // }
     }
   })
 
